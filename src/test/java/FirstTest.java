@@ -56,7 +56,7 @@ public class FirstTest {
                 15
         );
     }
-    
+
     @Test
     public void testCancelSearch() {
         waitForElementAndClick(
@@ -94,7 +94,7 @@ public class FirstTest {
         WebElement element = waitForElementPresent(by, errorMessage + " (элемент не найден)", 5);
         String actualText = element.getText();
         if (!actualText.contains(expectedText)) {
-            String fullErrorMessage = String.format("%s. Ожидаемый текст: '%s', Фактический текст: '%s'",
+            String fullErrorMessage = String.format("Фактический текст: '%s'",
                     errorMessage, expectedText, actualText);
             Assert.fail(fullErrorMessage);
         }
