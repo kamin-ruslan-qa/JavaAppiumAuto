@@ -22,4 +22,6 @@ dependencies {
 
 test {
     useJUnit()
+    systemProperty 'user.language', 'ru'
+    systemProperty 'user.country', 'RU'
 }
