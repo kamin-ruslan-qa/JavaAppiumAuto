@@ -56,8 +56,7 @@ public class FirstTest {
                 15
         );
     }
-
-
+    
     @Test
     public void testCancelSearch() {
         waitForElementAndClick(
