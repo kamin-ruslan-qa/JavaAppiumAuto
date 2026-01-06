@@ -10,12 +10,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.URL;
-
-
+import java.util.List;
 
 public class FirstTest {
     private AppiumDriver driver;
-
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +25,6 @@ public class FirstTest {
         capabilities.setCapability("appPackage", "org.wikipedia");
         capabilities.setCapability("appActivity", ".main.MainActivity");
         capabilities.setCapability("app", "C:/Users/user/Desktop/JavaAppiumAutomatoin/JavaAppiumAutomatoin/apiks/org.wikipedia.apk");
-
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
     }
@@ -90,15 +87,89 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testSearchAndCancel() {
+
+        String searchWord = "Java";
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                searchWord,
+                "Cannot find search input",
+                5
+        );
+
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+                "No search results found for '" + searchWord + "'",
+                15
+        );
+
+
+        List<WebElement> searchResults = driver.findElements(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']")
+        );
+        int resultsCount = searchResults.size();
+        System.out.println("Found " + resultsCount + " articles for '" + searchWord + "'");
+
+        Assert.assertTrue(
+                "Expected to find at least 2 articles, but found only " + resultsCount,
+                resultsCount >= 2
+        );
+
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find X to cancel search",
+                5
+        );
+
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+                "Search results are still present after canceling search",
+                5
+        );
+
+
+        waitForElementNotPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+                "Search results are still present after canceling search",
+                5
+        );
+        WebElement searchField = waitForElementPresent(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Search field not found",
+                5
+        );
+
+        String searchFieldText = searchField.getText();
+        Assert.assertTrue(
+                "Search field should be empty or contain placeholder after cancel, but contains: '" + searchFieldText + "'",
+                searchFieldText.isEmpty() || searchFieldText.equals("Search…") || searchFieldText.equals("Search Wikipedia")
+        );
+
+        System.out.println("✓ Test passed: Search for '" + searchWord + "' completed successfully");
+    }
+
     private void assertElementHasText(By by, String expectedText, String errorMessage) {
         WebElement element = waitForElementPresent(by, errorMessage + " (элемент не найден)", 5);
+
+
         String actualText = element.getText();
+
+
         if (!actualText.contains(expectedText)) {
             String fullErrorMessage = String.format("Фактический текст: '%s'",
                     errorMessage, expectedText, actualText);
             Assert.fail(fullErrorMessage);
         }
     }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
@@ -110,16 +181,19 @@ public class FirstTest {
     private WebElement waitForElementPresent(By by, String error_message) {
         return waitForElementPresent(by, error_message, 5);
     }
+
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.click();
         return element;
     }
+
     private WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.sendKeys(value);
         return element;
     }
+
     private boolean waitForElementNotPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
