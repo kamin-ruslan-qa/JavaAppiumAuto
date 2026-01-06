@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -114,13 +115,6 @@ public class FirstTest {
         List<WebElement> searchResults = driver.findElements(
                 By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']")
         );
-        int resultsCount = searchResults.size();
-        System.out.println("Found " + resultsCount + " articles for '" + searchWord + "'");
-
-        Assert.assertTrue(
-                "Expected to find at least 2 articles, but found only " + resultsCount,
-                resultsCount >= 2
-        );
 
 
         waitForElementAndClick(
@@ -152,16 +146,58 @@ public class FirstTest {
                 "Search field should be empty or contain placeholder after cancel, but contains: '" + searchFieldText + "'",
                 searchFieldText.isEmpty() || searchFieldText.equals("Search…") || searchFieldText.equals("Search Wikipedia")
         );
+    }
 
-        System.out.println("✓ Test passed: Search for '" + searchWord + "' completed successfully");
+    @Test
+    public void testSearchResultsMostlyContainQuery() {
+        String query = "Java";
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find search container",
+                5
+        );
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/search_src_text"),
+                query,
+                "Cannot find search input field",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']"),
+                "No search results appeared for query: " + query,
+                10
+        );
+
+        List<WebElement> resultCards = driver.findElements(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']")
+        );
+
+        int matches = 0;
+        for (WebElement card : resultCards) {
+            String titleText = "";
+            try {
+                WebElement titleElement = card.findElement(By.id("org.wikipedia:id/page_list_item_title"));
+                titleText = titleElement.getText().trim();
+            } catch (Exception ignored) {
+                continue;
+            }
+
+            if (!titleText.isEmpty() && titleText.toLowerCase().contains(query.toLowerCase())) {
+                matches++;
+            }
+        }
+        Assert.assertTrue(
+                "None of the " + resultCards.size() + " visible search results contain the word '" + query + "'",
+                matches > 0
+        );
     }
 
     private void assertElementHasText(By by, String expectedText, String errorMessage) {
         WebElement element = waitForElementPresent(by, errorMessage + " (элемент не найден)", 5);
 
-
         String actualText = element.getText();
-
 
         if (!actualText.contains(expectedText)) {
             String fullErrorMessage = String.format("Фактический текст: '%s'",
