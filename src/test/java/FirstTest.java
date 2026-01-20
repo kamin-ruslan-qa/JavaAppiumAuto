@@ -45,7 +45,13 @@ public class FirstTest {
 
     @After
     public void tearDown() {
-        driver.quit();
+        if (driver != null) {
+            try {
+                driver.executeScript("mobile: terminateApp", ImmutableMap.of("bundleId", "org.wikipedia"));
+            } catch (Exception e) {
+                driver.quit();
+            }
+        }
     }
 
     @Test
