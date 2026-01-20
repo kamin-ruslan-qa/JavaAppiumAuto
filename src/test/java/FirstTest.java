@@ -619,6 +619,31 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testArticleHasTitle() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Appium",
+                "Cannot find search input",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='Appium']"),
+                "Cannot find Appium in search",
+                5
+        );
+        assertElementPresent(
+                By.xpath("//android.widget.TextView[@text='Appium']"),
+                "Cannot find article title"
+        );
+
+    }
+
     private void assertElementHasText(By by, String expectedText, String errorMessage) {
         WebElement element = waitForElementPresent(by, errorMessage + " (элемент не найден)", 5);
         String actualText = element.getText();
@@ -718,16 +743,23 @@ public class FirstTest {
         List elements = driver.findElements(by);
         return elements.size();
     }
-    private void assertElementNotPresent(By by, String error_message, long timeoutInSeconds)
-    {
+
+    private void assertElementNotPresent(By by, String error_message, long timeoutInSeconds) {
         int amount_of_elements = getAmountOfElements(by);
         if (amount_of_elements > 0) {
             String default_amount = "An element '" + by.toString() + "' supposed to be not present";
             throw new AssertionError(default_amount + " " + error_message);
         }
     }
+
     private String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         return element.getAttribute(attribute);
     }
-}
+
+    private void assertElementPresent(By by, String error_message) {
+        if (getAmountOfElements(by) == 0) {
+            throw new AssertionError("Cannot find element by locator " + by + " " + error_message);
+        }
+    }
+    }
