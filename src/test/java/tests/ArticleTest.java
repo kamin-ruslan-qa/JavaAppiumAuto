@@ -2,6 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.ui.ArticlePageObject;
+import lib.ui.MyListPageObject;
 import lib.ui.SearchPageObject;
 import org.junit.Test;
 
@@ -38,4 +39,21 @@ public class ArticleTest extends CoreTestCase
         ArticlePageObject.swipeToFooter();
     }
 
+    @Test
+    // Задание :6
+    public void testArticleHasTitle()
+    {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Appium");
+
+        MyListPageObject MyListPageObject = new MyListPageObject(driver);
+        MyListPageObject.clickArticle("Appium");
+
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject.WeAreNotWaitingTitle();
+
+
+
+    }
 }

@@ -20,6 +20,11 @@ public class MainPageObject {
     {
         this.driver = driver;
     }
+
+    {
+
+    }
+
     public void assertElementHasText(By by, String expectedText, String errorMessage) {
         WebElement element = waitForElementPresent(by, errorMessage + " (элемент не найден)", 5);
         String actualText = element.getText();
@@ -33,7 +38,7 @@ public class MainPageObject {
         }
     }
 
-    public  WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
+    public static WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
         wait.withMessage(error_message + "\n");
         return wait.until(
@@ -45,7 +50,7 @@ public class MainPageObject {
         return waitForElementPresent(by, error_message, 5);
     }
 
-    public  WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
+    public static WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.click();
         return element;

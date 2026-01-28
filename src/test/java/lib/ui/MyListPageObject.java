@@ -2,14 +2,15 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class MyListPageObject extends MainPageObject {
     private static final String
             NOT_NOW_BUTTON = "//android.widget.Button[@resource-id='org.wikipedia:id/negativeButton'][@text='Not now']",
             FOLDER_BY_NAME_TPL = "//*[@text='{FOLDER_NAME}']",
-    ARTICLE_BY_TITLE_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']";
+            ARTICLE_BY_TITLE_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{TITLE}']";
 
-    private static String getFolderXpathByName(String name_of_folder)
+    public static String getFolderXpathByName(String name_of_folder)
     {
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
     }
@@ -61,5 +62,15 @@ public class MyListPageObject extends MainPageObject {
                 "Cannot find saved article to delete"
         );
         this.waitForArticleToDisappearByTitle(article_title);
+    }
+    public void clickArticle(String article_title)
+    {
+        String articleXpath = getSaveArticleXpathByTitle(article_title);
+
+        this.waitForElementAndClick(
+                By.xpath(articleXpath),
+                "Cannot find article by title " + article_title,
+                5
+        );
     }
 }

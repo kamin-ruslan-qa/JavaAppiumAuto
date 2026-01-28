@@ -13,7 +13,8 @@ public class ArticlePageObject extends MainPageObject {
             SAVE_BUTTON = "org.wikipedia:id/page_save",
             OPTIONS_ADD_TO_MY_LIST_BUTTON = "//android.widget.Button[@resource-id='org.wikipedia:id/snackbar_action'][@text='Add to list']",
             MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
-            MY_LIST_OK_BUTTON = "//*[@text='OK']";
+            MY_LIST_OK_BUTTON = "//*[@text='OK']",
+            APPIUM_ARTICLE_TITLE = "//android.widget.TextView[@text='Appium']";
 
 
     public ArticlePageObject(AppiumDriver driver) {
@@ -62,6 +63,30 @@ public class ArticlePageObject extends MainPageObject {
                 By.xpath(MY_LIST_OK_BUTTON),
                 "Cannot find 'OK' button",
                 5
+        );
+    }
+
+    public void WeAreNotWaitingTitle() {
+        this.assertElementPresent(
+                By.xpath(APPIUM_ARTICLE_TITLE),
+                "Cannot find article title"
+        );
+    }
+    public void addArticleToExistingList(String folderName) {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/page_save"),
+                "Cannot find save button",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//android.widget.Button[@text='Add to list']"),
+                "Cannot find 'Add to list' button",
+                5
+        );
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + folderName + "']"),
+                "Cannot find existing folder: " + folderName,
+                10
         );
     }
 }
