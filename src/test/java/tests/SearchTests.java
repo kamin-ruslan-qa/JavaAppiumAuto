@@ -71,4 +71,21 @@ public class SearchTests extends CoreTestCase
         SearchPageObject.clickCancelsTheSearch();
         SearchPageObject.TheSearchResulIsMissing();
     }
+    @Test
+    public void testSearchByTitleAndDescription() {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.waitForSearchResult("Java");
+        SearchPageObject.waitForElementByTitleAndDescription("Java", "Region and island in Indonesia");
+        SearchPageObject.waitForElementByTitleAndDescription("JavaScript", "High-level programming language");
+        SearchPageObject.waitForElementByTitleAndDescription("Java (programming language)", "Object-oriented programming language1");
+
+        int articlesCount = SearchPageObject.getAmountOfFoundArticles();
+        assertTrue(
+                "Expected at least 3 search results for 'Java', but found " + articlesCount,
+                articlesCount >= 3
+        );
+    }
 }

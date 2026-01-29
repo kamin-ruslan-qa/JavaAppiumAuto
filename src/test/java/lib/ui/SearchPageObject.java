@@ -12,6 +12,12 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_INPUT = "//*[@resource-id='org.wikipedia:id/search_src_text']",
             SEARCH_CANCEL_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']",
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{substring}']",
+            SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL =
+                    "//*[@resource-id='org.wikipedia:id/search_results_list']" +
+                            "/android.view.ViewGroup" +
+                            "[.//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']" +
+                            " and " +
+                            ".//*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{DESCRIPTION}']]",
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id='org.wikipedia:id/page_list_item_title']",
             SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results']",
             SEARCH_RESULTS_LIST = "//*[@resource-id='org.wikipedia:id/search_results_list']",
@@ -26,6 +32,10 @@ public class SearchPageObject extends MainPageObject {
     /* TemplateS method */
     public static String getSearchResult(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{substring}", substring);
+    }
+
+    public static String getSearchResultByTitleAndDescription(String title, String description) {
+        return SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL.replace("{TITLE}", title).replace("{DESCRIPTION}", description);
     }
     /* TemplateS method */
 
@@ -75,7 +85,7 @@ public class SearchPageObject extends MainPageObject {
         );
     }
 
-    public  void clickByArticleWithSubstring(String substring) {
+    public void clickByArticleWithSubstring(String substring) {
         String search_result_xpath = getSearchResult(substring);
         this.waitForElementAndClick(By.xpath(search_result_xpath),
                 "Cannot find and click search result with substring" + substring,
@@ -106,6 +116,7 @@ public class SearchPageObject extends MainPageObject {
         );
 
     }
+
     public int SeveralArticlesWereFound(String search_results) {
         this.waitForElementPresent(
                 By.xpath(SEARCH_RESULTS_LIST),
@@ -115,6 +126,7 @@ public class SearchPageObject extends MainPageObject {
         List<WebElement> searchResults = driver.findElements(By.xpath(SEARCH_RESULTS_ITEM));
         return searchResults.size();
     }
+
     public void clickCancelsTheSearch() {
         this.waitForElementAndClick(
                 By.id(SEARCH_CANCEL_BUTTON_THE_CROSS),
@@ -122,6 +134,7 @@ public class SearchPageObject extends MainPageObject {
                 5
         );
     }
+
     public void TheSearchResulIsMissing() {
         this.waitForElementNotPresent(
                 By.xpath(SEARCH_RESULTS_LIST),
@@ -130,4 +143,11 @@ public class SearchPageObject extends MainPageObject {
         );
     }
 
-}
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        String search_result_xpath = SEARCH_RESULT_BY_TITLE_AND_DESCRIPTION_TPL.replace("{TITLE}", title).replace("{DESCRIPTION}", description);
+        this.waitForElementPresent(By.xpath(search_result_xpath),
+                "Cannot find article with title '" + title + "' and description '" + description + "'",
+                15
+        );
+    }
+    }
