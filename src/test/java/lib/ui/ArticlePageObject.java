@@ -22,11 +22,7 @@ public class ArticlePageObject extends MainPageObject {
     }
 
     public WebElement waitForTitleElement() {
-        return this.waitForElementPresent(
-                By.xpath(TITLE),
-                "Cannot find article title on page!",
-                15
-        );
+        return this.waitForElementPresent(By.id(TITLE), "Cannot find article title on page!", 15);
     }
 
     public String getArticleTitle() {

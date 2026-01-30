@@ -12,17 +12,13 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class MainPageObject {
     protected static AppiumDriver driver;
 
-    public MainPageObject(AppiumDriver driver)
-    {
+    public MainPageObject(AppiumDriver driver) {
         this.driver = driver;
-    }
-
-    {
-
     }
 
     public void assertElementHasText(By by, String expectedText, String errorMessage) {
@@ -46,7 +42,7 @@ public class MainPageObject {
         );
     }
 
-    public  WebElement waitForElementPresent(By by, String error_message) {
+    public WebElement waitForElementPresent(By by, String error_message) {
         return waitForElementPresent(by, error_message, 5);
     }
 
@@ -56,7 +52,7 @@ public class MainPageObject {
         return element;
     }
 
-    public  WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds) {
+    public WebElement waitForElementAndSendKeys(By by, String value, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.sendKeys(value);
         return element;
